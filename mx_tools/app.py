@@ -25,13 +25,13 @@ class DigResolver:
                 query_result.append(res)
             except Exception:
                 query_result.append([])
-        return query_result
+        return query_result, domain
 
-    def results(self, query_res):
-        if not query_res:
+    def results(self, query_result):
+        if not query_result:
             return {}
         keys = ["a_rec", "ns_rec", "cn_rec", "soa_rec", "ptr_rec", "mx_rec", "txt_rec", "aaaa_rec", "ds_rec", "dnskey_rec", "cds_rec", "cdnskey_rec", "caa_rec"]
-        return {key: res for key, res in zip(keys, query_res) if res}
+        return {key: res for key, res in zip(keys, query_result) if res}
 
 class MXToolsApp(App):
     CSS_PATH = "../assets/css/buttons.tcss"
@@ -42,9 +42,9 @@ class MXToolsApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Label("Please enter a domain name or IP.")
+        yield Label("Enter a domain name or IP.")
         yield Input(type="text", validators=[Function(validate_address, "Invalid domain or IP")])
-        yield Button(label="Search", variant="primary")
+        yield Button(label="Search", variant="primary", tooltip="Click search to run query")
         yield RichLog(id="results")
         yield Footer()
 
@@ -56,12 +56,13 @@ class MXToolsApp(App):
             return
         dig = DigResolver()
         dig_query = await dig.run_query(value)
-        dig_rs = dig.results(dig_query)
+        domain = dig_query[1]
+        dig_results = dig.results(dig_query[0])
         results_log = self.query_one("#results", RichLog)
         results_log.clear()
-        for key, value in dig_rs.items():
+        for key, value in dig_results.items():
             results_log.write(f"{key.upper()}: {value or 'No records'}")
-        input_widget.value = ""
+        input_widget.value = f"{domain}"
 
     def on_mount(self) -> None:
         self.title = "MX Tools Application"
@@ -71,6 +72,7 @@ def validate_address(address):
     domain_pattern = r'^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$'
     ip_pattern = r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
     return bool(re.match(domain_pattern, address) or re.match(ip_pattern, address))
+
 
 if __name__ == "__main__":
     app = MXToolsApp()
