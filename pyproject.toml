@@ -1,0 +1,14 @@
+[project]
+name = "mx-tools"
+version = "0.1.0"
+description = "A Textual TUI for querying DNS records using pydig"
+authors = [{ name = "Craig Derington", email = "craig@craigderington.dev" }]
+dependencies = [
+    "textual>=0.81.0",
+    "pydig>=0.4.0",
+    "textual-dev",
+]
+requires-python = ">=3.12"
+
+[project.scripts]
+mx-tools = "mx_tools.app:MXToolsApp.run"
