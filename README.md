@@ -3,6 +3,8 @@
 
 ## Overview
 
+![DiggerNS](https://raw.githubusercontent.com/craigderington/digger-ns/refs/heads/master/assets/images/mxtools-textual-app.png)
+
 The MX Tools Application is a sophisticated Textual User Interface (TUI) built with Python, designed to query the DNS network for various record types using the DIG command. This application leverages the power of the Textual framework to provide an interactive, terminal-based experience for users to input domain names or IP addresses and retrieve detailed DNS information. It supports querying multiple DNS record types such as A, NS, CNAME, SOA, PTR, MX, TXT, AAAA, DS, DNSKEY, CDS, CDNSKEY, and CAA.
 
 The application is built for ease of use, featuring input validation for domains and IPs, a search button to initiate queries, and a display area for results. It is ideal for network administrators, developers, and anyone needing quick DNS lookups without leaving the terminal.
